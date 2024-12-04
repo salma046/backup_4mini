@@ -168,7 +168,7 @@ int					assign_files(t_minishell data, t_node *nodes);
 
 
 // executr commands:
-int ft_execute(t_token *data, char **env);
+int ft_execute(t_minishell data, t_node *nodes, char **env);
 
 // redirectios:
 int					ft_input(char *file_name, t_node *node);

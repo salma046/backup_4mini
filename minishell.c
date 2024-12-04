@@ -40,7 +40,8 @@ int main3(t_minishell data)
 	prepar_for_execution(data);
 	while(temp_nodes)
 	{
-		printf("the cmd[0] is  : %s\n", temp_nodes->cmd[0]);
+		// printf("hello worlddddd\n");
+		// printf("the cmd[0] is  : %s\n", temp_nodes->cmd[0]);
 		if (temp_nodes->cmd[0] == NULL)
 		{
 			printf("hello !!!!!!\n");
@@ -51,16 +52,15 @@ int main3(t_minishell data)
 			check_command(data, temp_nodes);
 		else
 		{
-			printf("\n***hhhhhh NOt handled yethh***\n");
-			// printf("\033[32m-->in:%s\033[0\n", temp_tokens->data);
-			// data->envirement = mk_tenv_char(data->envir);
-			// int retu = ft_execute(temp_tokens, data->envirement);
-			// if (retu == 127)
-			// {
-			// 	free_env_array(data->envirement);
-			// 	return 1;
-			// }
-			// free_env_array(data->envirement);
+			// printf("the cmd[0] is not a buil: %s\n", data.nodes->cmd[0]);
+			data.envirement = mk_tenv_char(data.envir);
+			int retu = ft_execute(data, data.nodes, data.envirement);
+			if (retu == 127)
+			{
+				free_env_array(data.envirement);
+				return 1;
+			}
+			free_env_array(data.envirement);
 		}
 		temp_nodes = temp_nodes->next_node;
 	}

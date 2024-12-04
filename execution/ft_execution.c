@@ -18,7 +18,7 @@ int	mksome_files(int count_pipe, t_minishell data)
 	int		i;
 
 	i = 0;
-	if (count_pipe <= 1)
+	if (count_pipe == 1 || count_pipe == 0)
 	{
 		data.files = NULL;
 		return (0);

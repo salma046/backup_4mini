@@ -2,7 +2,6 @@
 
 char    *find_command_path(char *command, char **env){
 
-        printf("\033[0;31mcommand:%s\033[0m\n", command);
         char *path_env = NULL;
         char full_path[1024];
         int i = 0, j = 0, k = 0;
@@ -30,11 +29,9 @@ char    *find_command_path(char *command, char **env){
             }
             full_path[k++] = '/';
             j = 0;
-            // printf("\033[0;33mcommand:%s\033[0m", command);
             while (command[j] != '\0') {
                 full_path[k++] = command[j++];
             }
-            // printf("====>full_path:%s\n", full_path);
             full_path[k] = '\0';
 
             if (access(full_path, X_OK) == 0) {
@@ -47,52 +44,60 @@ char    *find_command_path(char *command, char **env){
     return NULL;
 }
 
-int ft_execute(t_token *data, char **env) {
-    char *command_path;
-    char **args;
-    int arg_count = 0;
-    t_token *current = data;
+void    free_fds(t_minishell data)
+{
+    int i;
 
-    while (current != NULL) {
-        arg_count++;
-        current = current->next_token;
-    }
-
-    args = malloc((arg_count + 1) * sizeof(char *));
-    if (!args) {
-        perror("malloc");
-        return -1;  
-    }
-
-    current = data;
-    int i = 0;
-    while(i < arg_count) {
-        args[i] = current->data;
-        current = current->next_token;
-
+    i = 0;
+    if (!data.files)
+        return ;
+    while (data.files[i])
+    {
+        close(data.files[i][0]);
+        close(data.files[i][1]);
         i++;
     }
-    args[arg_count] = NULL;
+    i = 0;
+    while (data.files[i])
+    {
+        free(data.files[i]);
+        i++;
+    }
+    free(data.files);
+    data.files = NULL;
+}
+
+int ft_execute(t_minishell data, t_node *nodes, char **env) 
+{
+    char *command_path;
+    char **args;
+    pid_t pid;
+
+    
+    args = nodes->cmd;
 
     command_path = find_command_path(args[0], env);
     if (!command_path) {
-        printf("%s: command not found\n", args[0]);
-        free(args);
+		write(nodes->out_file, args[0], ft_strlen(args[0]));
+		write(nodes->out_file, ": command not found", ft_strlen(": command not found"));
+        write(nodes->out_file, "\n", 1);
+		// printf("%s: command not found\n", args[0]);
         return 127;  
     }
 
-    pid_t pid = fork();
+    pid = fork();
     if (pid == -1) {
         perror("Fork");
         free(command_path);
-        free(args);
         return -1;
     }
     else if (pid == 0) {
+        dup2(nodes->in_file, 0);
+	    dup2(nodes->out_file, 1);
+	    free_fds(data);
         if (execve(command_path, args, env) == -1) {
             perror("execve");
             free(command_path);
-            free(args);
             exit(1);
         }
     } 
@@ -106,6 +111,5 @@ int ft_execute(t_token *data, char **env) {
         }
     }
     free(command_path);
-    free(args);
     return 0;
 }
