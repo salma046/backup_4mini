@@ -6,7 +6,7 @@
 /*   By: salaoui <salaoui@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:59:29 by salaoui           #+#    #+#             */
-/*   Updated: 2024/12/04 01:31:03 by salaoui          ###   ########.fr       */
+/*   Updated: 2024/12/04 04:51:20 by salaoui          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,18 +87,18 @@ void	fill_commands(t_node **node_list, t_token *tokens)
 t_node	*mk_nodes(t_token *tokens)
 {
 	t_node	*nodes;
-	// t_token	*curre1nt;
-	// t_token	*next;
+	t_token	*current;
+	t_token	*next;
 
 	nodes = NULL;
-	// current = tokens;
+	current = tokens;
 	fill_commands(&nodes, tokens);
-	// while (current)
-	// {
-	// 	next = current->next_token;
-	// 	free(current->data);
-	// 	free(current);
-	// 	current = next;
-	// }
+	while (current)
+	{
+		next = current->next_token;
+		free(current->data);
+		free(current);
+		current = next;
+	}
 	return (nodes);
 }

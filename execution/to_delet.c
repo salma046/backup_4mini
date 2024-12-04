@@ -1,6 +1,36 @@
 #include "../minishell.h"
 
 
+
+void	key_without_equal(t_token *tokens, t_env *envir, int active)
+{
+	t_env	*head;
+	t_token	*temp_tokens;
+	t_env	*new_export;
+
+	head = NULL;
+	temp_tokens = tokens;
+	head = envir;
+	(void)active;
+	while (head && head->next != NULL)
+		head = head->next;
+	if (check_key(temp_tokens->data, envir) == 0)
+	{
+		new_export = (t_env *)malloc(sizeof(t_env));
+		if (!new_export)
+			exit(1);
+		new_export->key = ft_strdup(temp_tokens->data);
+		new_export->value = NULL;
+		new_export->next = NULL;
+		if (head == NULL)
+			envir = new_export;
+		else
+			head->next = new_export;
+		head = new_export;
+	}
+}
+
+
 int	is_special_char(char c)
 {
 	if ((c >= 33 && c <= 47) || (c >= 58 && c <= 64))

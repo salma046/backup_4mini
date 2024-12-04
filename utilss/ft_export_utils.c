@@ -14,24 +14,21 @@ int	check_key(char *str, t_env *envir)
 	return (0);
 }
 
-void	key_without_equal(t_token *tokens, t_env *envir, int active)
+void	key_without_equal(char *data, t_env *envir)
 {
 	t_env	*head;
-	t_token	*temp_tokens;
 	t_env	*new_export;
 
 	head = NULL;
-	temp_tokens = tokens;
 	head = envir;
-	(void)active;
 	while (head && head->next != NULL)
 		head = head->next;
-	if (check_key(temp_tokens->data, envir) == 0)
+	if (check_key(data, envir) == 0)
 	{
 		new_export = (t_env *)malloc(sizeof(t_env));
 		if (!new_export)
 			exit(1);
-		new_export->key = ft_strdup(temp_tokens->data);
+		new_export->key = ft_strdup(data);
 		new_export->value = NULL;
 		new_export->next = NULL;
 		if (head == NULL)
@@ -68,12 +65,13 @@ void	sort_env(t_env *envir)
 	sort_env(envir->next);
 }
 
-void	ft_env_export_once(t_token *data, t_env *envir, int active)
+void	ft_env_export_once(t_node *nodes, t_env *envir, int active)
 {
 	t_env	*head;
 	t_env	*current;
+	t_node	*tmp_node;
 
-	(void)data;
+	tmp_node = nodes;
 	head = envir;
 	if (active == 1)
 		sort_env(head);
@@ -83,10 +81,21 @@ void	ft_env_export_once(t_token *data, t_env *envir, int active)
 		if (current->value == NULL || !ft_strcmp(current->value, ""))
 		{
 			current->value = ft_strdup("");
+			write(tmp_node->out_file, "declare -x ", ft_strlen("declare -x "));
+			write(tmp_node->out_file, current->key, ft_strlen(current->key));
+			write(tmp_node->out_file, current->value, ft_strlen(current->value));
+			write(tmp_node->out_file, "\n", 1);
 			printf("declare -x %s%s\n", current->key, current->value);
 		}
 		else if (active == 1)
+		{
+			write(tmp_node->out_file, "declare -x ", ft_strlen("declare -x "));
+			write(tmp_node->out_file, current->key, ft_strlen(current->key));
+			write(tmp_node->out_file, "=", 1);
+			write(tmp_node->out_file, current->value, ft_strlen(current->value));
+			write(tmp_node->out_file, "\n", 1);
 			printf("declare -x %s=%s\n", current->key, current->value);
+		}
 		current = current->next;
 	}
 }

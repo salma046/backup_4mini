@@ -49,10 +49,9 @@ char	*put_quot2_value(char *str)
 	return (result);
 }
 
-void	key_with_equal(t_token *tokens, t_env *envir)
+void	key_with_equal(char *data, t_env *envir)
 {
 	t_env	*head;
-	t_token	*temp_tokens;
 	t_env	*new_export;
 	char	*split_var;
 
@@ -62,19 +61,11 @@ void	key_with_equal(t_token *tokens, t_env *envir)
 	{
 		head = head->next;
 	}
-	temp_tokens = tokens;
-	split_var = ft_strchr(temp_tokens->data, '=');
+	split_var = ft_strchr(data, '=');
 	new_export = malloc(sizeof(t_env));
 	if (!new_export)
 		return ;
-	if (!split_var)
-	{
-		printf("Error: '=' not found in token_data.\n");
-		free(new_export);
-		return ;
-	}
-	new_export->key = ft_strndup(temp_tokens->data, split_var
-			- temp_tokens->data);
+	new_export->key = ft_strndup(data, split_var - data);
 	new_export->value = put_quot2_value(ft_strdup(split_var + 1));
 	new_export->next = NULL;
 	if (head == NULL)
@@ -94,39 +85,44 @@ int	not_valid(char *str)
 		return (0);
 }
 
-void	process_key(char *token_data, t_token *current_token,
-			t_env *expo_envir, t_env *env_envir)
+void	process_key(char *data, t_env *expo_envir, t_env *env_envir)
 {
 	char	*split_var;
 	char	*key;
 
-	split_var = ft_strchr(token_data, '=');
+	split_var = ft_strchr(data, '=');
 	if (!split_var)
-		key_without_equal(current_token, expo_envir, 0);
+		key_without_equal(data, expo_envir);
 	else
 	{
-		key = ft_strndup(token_data, split_var - token_data);
+		key = ft_strndup(data, split_var - data);
 		if (check_key(key, expo_envir))
 		{
 			remove_node(&expo_envir, key);
 			remove_node(&env_envir, key);
 		}
 		free(key);
-		key_with_equal(current_token, expo_envir);
+		key_with_equal(data, expo_envir);
 	}
 }
 
-int	search_special_char(char *token_data)
+int	search_special_char(char *token_data, t_node *node)
 {
 	int	i;
+	t_node *tmp_node;
 
 	i = 0;
+	tmp_node = node;
 	while (token_data[i] != '\0' && token_data[i] != '=')
 	{
 		if (is_special_char(token_data[i]))
 		{
-			printf("bash: export: %s': not a valid identifier\n",
-				token_data);
+			write(tmp_node->out_file, "bash: export: ", ft_strlen("bash: export: "));
+			write(tmp_node->out_file, token_data, ft_strlen(token_data));
+			write(tmp_node->out_file, "': not a valid identifier", ft_strlen("': not a valid identifier"));
+			write(tmp_node->out_file, "\n", 1);
+			// printf("bash: export: %s': not a valid identifier\n",
+			// 	token_data);// use the write and in the fd;;;;;
 			return (1);
 		}
 		i++;
@@ -134,46 +130,53 @@ int	search_special_char(char *token_data)
 	return (0);
 }
 
-int	check_all_tokens(t_token *tokens)
+int	check_all_tokens(char **args, t_node *nodes)
 {
-	t_token *tmp;
+	char	**tmp_args;
+	int		i;
 
-	tmp = tokens;
-	while (tmp)
+	i = 0;
+	tmp_args = args;
+	while (tmp_args[i])
 	{
-		if (search_special_char(tmp->data) == 1)
+		if (search_special_char(tmp_args[i], nodes) == 1)
 			return (1);
-		tmp = tmp->next_token;
+		i++;
 	}
 	return (0);
 }
 
-void	ft_add_to_export_arg(t_token *tokens, t_env *expo_envir,
+void	ft_add_to_export_arg(t_node *nodes, t_env *expo_envir,
 		t_env *env_envir)
 {
-	t_token	*current_token;
+	char	**commands;
 	char	*token_data;
 
-	if (!tokens || !tokens->next_token || !expo_envir)
+	commands = nodes->cmd;
+	if (!commands || !commands[1] || !expo_envir)
 		return ;
-	current_token = tokens->next_token;
-	if (check_all_tokens(current_token) == 1)
+	if (check_all_tokens(commands, nodes) == 1)
 		return ;
-	while (current_token != NULL && current_token->data_type == WORD)
+	commands++;
+	while (*commands)
 	{
-		token_data = current_token->data;
-		if (!token_data)
+		printf("\nthe word will be added is: %s\n", *commands);
+		if (*commands == NULL)
 		{
-			current_token = current_token->next_token;
+			commands++;
 			continue ;
 		}
-		if (not_valid(token_data) == 1)
+		if (not_valid(*commands) == 1)
 		{
-			printf("bash: export: %s': not a valid identifier\n", token_data);
+			write(nodes->out_file, "bash: export: ", ft_strlen("bash: export: "));
+			write(nodes->out_file, token_data, ft_strlen(token_data));
+			write(nodes->out_file, "': not a valid identifier", ft_strlen("': not a valid identifier"));
+			write(nodes->out_file, "\n", 1);
+			// printf("bash: export: %s': not a valid identifier\n", token_data);
 			return ;
 		}
-		process_key(current_token->data, current_token, expo_envir, env_envir);
-		current_token = current_token->next_token;
+		process_key(*commands, expo_envir, env_envir);
+		commands++;
 	}
 }
 
@@ -181,13 +184,11 @@ void	ft_export(t_minishell data, t_env *expo_envir, t_env *env_envir)
 {
 	int	active;
 	t_node *tmp_nodes;
-	int	i;
 
-	i = 0;
 	tmp_nodes = data.nodes;
-	active = 0;
 	if (!tmp_nodes->cmd[0] || !expo_envir)
 		return ;
+	active = 1;
 	if ((tmp_nodes->cmd[1] == NULL && tmp_nodes->cmd[0]))
 	{
 		if (!ft_strcmp(tmp_nodes->cmd[0], "export"))
@@ -197,8 +198,7 @@ void	ft_export(t_minishell data, t_env *expo_envir, t_env *env_envir)
 	else
 	{
 		active = 0;
-		ft_add_to_export_arg(g_minishell.tokens, expo_envir, env_envir);
-		printf("\n---2---\n");
+		ft_add_to_export_arg(tmp_nodes, expo_envir, env_envir);
 	}
 	search_check_add_env(expo_envir, env_envir);
 }

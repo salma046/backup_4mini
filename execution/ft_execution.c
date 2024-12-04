@@ -12,7 +12,7 @@ int	free_fd(int **fd, int count)
 	return (-3);
 }
 
-int	mksome_files(int count_pipe, t_minishell *data)
+int	mksome_files(int count_pipe, t_minishell data)
 {
 	int		**fd;
 	int		i;
@@ -20,7 +20,7 @@ int	mksome_files(int count_pipe, t_minishell *data)
 	i = 0;
 	if (count_pipe <= 1)
 	{
-		data->files = NULL;
+		data.files = NULL;
 		return (0);
 	}
 	fd = malloc(sizeof(int *) * (count_pipe));
@@ -35,21 +35,21 @@ int	mksome_files(int count_pipe, t_minishell *data)
 		i++;
 	}
 	fd[i] = NULL;
-	data->files = fd;
+	data.files = fd;
 	return (0);
 }
 
-int	assign_files(t_minishell *data, t_node *nodes)
+int	assign_files(t_minishell data, t_node *nodes)
 {
 	t_node	*tmp_node;
 	int		**file;
 	int		i;
 
 	i = 1;
-	if (data->files == NULL)
+	if (data.files == NULL)
 		return (0);
 	tmp_node = nodes;
-	file = data->files;
+	file = data.files;
 	tmp_node->out_file = file[0][1];
 	tmp_node = tmp_node->next_node;
 	while (tmp_node)
