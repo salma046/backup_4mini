@@ -191,7 +191,7 @@ void	ft_export(t_minishell data, t_env *expo_envir, t_env *env_envir)
 	if ((tmp_nodes->cmd[1] == NULL && tmp_nodes->cmd[0]))
 	{
 		if (!ft_strcmp(tmp_nodes->cmd[0], "export"))
-			ft_env_export_once(g_minishell.tokens, expo_envir, active);
+			ft_env_export_once(tmp_nodes, expo_envir, active);
 		// return ;
 	}
 	else

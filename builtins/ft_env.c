@@ -14,9 +14,9 @@ void	ft_env(t_node *node, t_minishell data)
 			write(node->out_file, "=", 1);
 			write(node->out_file, tmp->value, ft_strlen(tmp->value));
 			write(node->out_file, "\n", 1);
-			printf("%s", tmp->key);
-			printf("%c", '=');
-			printf("%s\n", tmp->value);
+			// printf("%s", tmp->key);
+			// printf("%c", '=');
+			// printf("%s\n", tmp->value);
 		}
 		tmp = tmp->next;
 	}
