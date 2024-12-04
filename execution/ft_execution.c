@@ -23,7 +23,7 @@ int	mksome_files(int count_pipe, t_minishell data)
 		data.files = NULL;
 		return (0);
 	}
-	fd = malloc(sizeof(int *) * (count_pipe));
+	fd = (int **)malloc(sizeof(int *) * (count_pipe));
 	if (!fd)
 		return (-1);
 	while (i < count_pipe - 1)

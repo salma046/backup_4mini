@@ -25,6 +25,7 @@ int	prepar_for_execution(t_minishell data)
 		return (-1);
 	if (ft_check_redirections(data.nodes) < 0) // just open files fhad lmrhala and do nothing.;
 		return (-1);
+	free_fds(data);
 	return (0);
 	// start the real work
 }
@@ -62,6 +63,7 @@ int main3(t_minishell data)
 			}
 			free_env_array(data.envirement);
 		}
+	    free_fds(data);
 		temp_nodes = temp_nodes->next_node;
 	}
     return (0);
@@ -73,21 +75,6 @@ void handle_sigint(int sig)
 	(void)sig;
 	printf("\n\033[1;35m Minishell~$ \033[0m");
 }
-
-void free_files(int **files)
-{
-    int i = 0;
-
-    if (!files)
-        return;
-    while (files[i])
-    {
-        free(files[i]);
-        i++;
-    }
-    free(files); // Free the outer array
-}
-
 
 int	main(int ac, char *av[], char **env)
 {
@@ -104,11 +91,10 @@ int	main(int ac, char *av[], char **env)
 		g_minishell.command = readline("\033[1;35m Minishell~$ \033[0m");
 		if (!g_minishell.command)
 		{
-			printf("Quiting minishell!\n");
+			printf("exit!\n");
 			free_env_list(g_minishell.envir);
 			free_env_list(g_minishell.export_env);
 			free(g_minishell.command);
-			free_files(g_minishell.files);//// this line will not be needed one time
 			clear_history();
 			exit(1);
 		}
@@ -122,33 +108,7 @@ int	main(int ac, char *av[], char **env)
 		if (main_heredoc(g_minishell.tokens) < 0)
 			continue ;
 		g_minishell.nodes = mk_nodes(g_minishell.tokens);
-		// if (ft_check_redirections(&g_minishell, g_minishell.tokens) < 0)
-		// 	continue ;
 		main3(g_minishell);
-		// tmp_node = g_minishell.nodes;
-		// while (tmp_node)
-		// {
-		// 	j = 0;
-		// 	i = 0;
-		// 	printf("----------------------------------------------------------\n");
-		// 	while(tmp_node->cmd[j])
-		// 	{
-		// 		printf("the node \033[32m%d\033[0m cmds n* %d is :\033[32m %s\033[0m\n",
-		// 		i, j, tmp_node->cmd[j]);
-		// 		j++;
-		// 	}
-		// 	while(tmp_node->redir)
-		// 	{
-		// 		printf("the redir file name is: %s\n",
-		// 			tmp_node->redir->file);
-		// 		printf("the redir type is: %d\n",
-		// 			tmp_node->redir->red_type);
-		// 		tmp_node->redir = tmp_node->redir->next;
-		// 	}
-		//  	printf("----------------------------------------------------------\n");
-		// 	tmp_node = tmp_node->next_node;
-		// 	i++;
-		// }
 		free_node_list(g_minishell.nodes);
 	}
 }
