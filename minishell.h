@@ -161,7 +161,7 @@ void				remove_node(t_env** head, char *keyToRemove);
 void				search_check_add_env(t_env *expo_envir, t_env *env_envir);
 void				*mk_env_4expo(char **envir);
 char				*ft_strncpy(char *dst, const char *src, size_t len);
-int					mksome_files(int count_pipe, t_minishell data);
+int					**mksome_files(int count_pipe);
 int					assign_files(t_minishell data, t_node *nodes);
 // void				ft_env_export_once(t_token *token, int active);
 // void			ft_add_to_export_arg(t_token *token);

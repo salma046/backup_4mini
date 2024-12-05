@@ -6,7 +6,7 @@
 /*   By: salaoui <salaoui@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:36:50 by salaoui           #+#    #+#             */
-/*   Updated: 2024/12/02 12:08:43 by salaoui          ###   ########.fr       */
+/*   Updated: 2024/12/05 00:56:16 by salaoui          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,6 @@ char	*remp_with_null(char *str)
 		if (valid_word(str, i) == 1)
 			put_env_in_word(str, word, NULL, &i, &j);
 	}
-	free(str);
 	word[j] = '\0';
 	return (word);
 }

@@ -2,12 +2,27 @@
 
 void	ft_print(t_node *node, char **cmd, int i)
 {
+	(void)node;
 	while (cmd[i])
 	{
-		write(node->out_file, cmd[i], ft_strlen(cmd[i]));
+		write(1, cmd[i], ft_strlen(cmd[i]));
 		if (cmd[i + 1] != NULL)
-			write(node->out_file, " ", 1);
+			write(1, " ", 1);
 		i++;
+	}
+}
+
+void	ft_check_n_flag(char **cmd, int *i)
+{
+	while (cmd[*i] && !ft_strcmp(cmd[*i], "-n"))
+	{
+		// *flag = 1;
+		// *tmp_tokens = (*tmp_tokens)->next_token;
+		(*i)++;
+	}
+	if (!ft_strcmp(cmd[*i - 1], "-n"))
+	{
+		(*i)--;
 	}
 }
 
@@ -21,13 +36,13 @@ void	ft_echo(t_node *node,char **cmd)
 	{
 		if (cmd[i] == NULL)
 		{
-			write(node->out_file, "\n", 1);
+			write(1, "\n", 1);
 			return ;
 		}
+		ft_check_n_flag(cmd, &i);
 		if (!ft_strcmp(cmd[i], "-n"))
 		{
 			i++;
-			// tmp_tokens = cmd[i]->next_token;
 			if (cmd[i] == NULL)
 				return ;
 			ft_print(node, cmd, i);
@@ -35,7 +50,7 @@ void	ft_echo(t_node *node,char **cmd)
 		else
 		{
 			ft_print(node, cmd, i);
-			write(node->out_file, "\n", 1);
+			write(1, "\n", 1);
 		}
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: salaoui <salaoui@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/20 15:58:15 by salaoui           #+#    #+#             */
-/*   Updated: 2024/11/29 11:17:46 by salaoui          ###   ########.fr       */
+/*   Updated: 2024/12/04 19:05:52 by salaoui          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,3 +81,4 @@ char	*ft_join_words(char *word, char *str, int l)
 	free(str); // I added this free it's logic to free str but need testing
 	return (hi);
 }
+

@@ -51,7 +51,6 @@ void	token_new_word(char *word, enum e_token_type token_t,
 	new_token->data_type = token_t;
 	new_token->next_token = NULL;
 	ft_lstadd_back_token(tokens_list, new_token);
-	
 }
 
 int	find_quote(char c, char **line, int *i)
@@ -102,8 +101,6 @@ int	ft_put_word_token(char **line, enum e_token_type token_t,
 		(*line)++;
 	}
 	new_word = get_word(word, i);
-	if (new_word == NULL)
-    	return (0);
 	while (is_space(*line) == 1)
 		(*line)++;
 	token_new_word(new_word, WORD, tokens_list, heredoc);

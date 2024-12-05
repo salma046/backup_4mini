@@ -75,14 +75,14 @@ int ft_execute(t_minishell data, t_node *nodes, char **env)
 
     
     args = nodes->cmd;
-
+    printf("Executing command: %s\n", args[0]);
     command_path = find_command_path(args[0], env);
     if (!command_path) {
-		write(nodes->out_file, args[0], ft_strlen(args[0]));
-		write(nodes->out_file, ": command not found", ft_strlen(": command not found"));
-        write(nodes->out_file, "\n", 1);
-		// printf("%s: command not found\n", args[0]);
-        return 127;  
+		// write(nodes->out_file, args[0], ft_strlen(args[0]));
+		// write(nodes->out_file, ": command not found", ft_strlen(": command not found"));
+        // write(nodes->out_file, "\n", 1);
+		printf("%s: command not found\n", args[0]);
+        return 127;
     }
 
     pid = fork();
@@ -92,8 +92,8 @@ int ft_execute(t_minishell data, t_node *nodes, char **env)
         return -1;
     }
     else if (pid == 0) {
-        dup2(nodes->in_file, 0);
-	    dup2(nodes->out_file, 1);
+        dup2(nodes->in_file, 1);
+	    dup2(nodes->out_file, 0);
 	    free_fds(data);
         if (execve(command_path, args, env) == -1) {
             perror("execve");
