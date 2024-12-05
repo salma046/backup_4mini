@@ -35,7 +35,7 @@ void	execute_the_builtin(t_minishell data, t_node *nodes, char **cmd)
 	if (!ft_strcmp(cmd[0], "echo"))
 	{
 		printf("This is builtin: echo\n");
-		ft_echo(nodes, cmd);
+		ft_echo(nodes);
 	}
 	if (!ft_strcmp(cmd[0], "cd"))
 	{

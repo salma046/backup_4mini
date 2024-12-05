@@ -1,56 +1,81 @@
 #include "../minishell.h"
 
-void	ft_print(t_node *node, char **cmd, int i)
+void ft_print(t_node *node)
 {
-	(void)node;
-	while (cmd[i])
-	{
-		write(1, cmd[i], ft_strlen(cmd[i]));
-		if (cmd[i + 1] != NULL)
-			write(1, " ", 1);
-		i++;
-	}
+    int i = 0;
+    
+    while (node->cmd[i])
+    {
+        write(1, node->cmd[i], ft_strlen(node->cmd[i]));
+        if (node->cmd[i + 1] != NULL)
+            write(1, " ", 1);
+        i++;
+    }
 }
 
-void	ft_check_n_flag(char **cmd, int *i)
+void ft_check_n_flag(char **cmd, int *flag, int *start_index)
 {
-	while (cmd[*i] && !ft_strcmp(cmd[*i], "-n"))
-	{
-		// *flag = 1;
-		// *tmp_tokens = (*tmp_tokens)->next_token;
-		(*i)++;
-	}
-	if (!ft_strcmp(cmd[*i - 1], "-n"))
-	{
-		(*i)--;
-	}
+    *flag = 0;
+    *start_index = 1;
+
+    // Check if first argument is -n or starts with -n
+    while (cmd[*start_index] && strncmp(cmd[*start_index], "-n", 2) == 0)
+    {
+        char *str = cmd[*start_index];
+        int i = 2;  
+        int all_n = 1;  
+
+        while (str[i] != '\0')
+        {
+            if (str[i] != 'n')
+            {
+                all_n = 0;  
+                break;
+            }
+            i++;
+        }
+        
+        if (all_n)
+        {
+            *flag = 1;
+            (*start_index)++;
+        }
+        else
+            break;
+    }
 }
 
-void	ft_echo(t_node *node,char **cmd)
+void ft_echo(t_node *node)
 {
-	// t_token	*tmp_tokens;
-	int	i;
-	// tmp_tokens = data;
-	i = 1;
-	if (cmd[i])
-	{
-		if (cmd[i] == NULL)
-		{
-			write(1, "\n", 1);
-			return ;
-		}
-		ft_check_n_flag(cmd, &i);
-		if (!ft_strcmp(cmd[i], "-n"))
-		{
-			i++;
-			if (cmd[i] == NULL)
-				return ;
-			ft_print(node, cmd, i);
-		}
-		else
-		{
-			ft_print(node, cmd, i);
-			write(1, "\n", 1);
-		}
-	}
+    int flag = 0;
+    int start_index = 1;
+
+    // No command or only "echo"
+    if (!node->cmd || !node->cmd[1])
+    {
+        write(1, "\n", 1);
+        return;
+    }
+
+    // Check for -n flag
+    ft_check_n_flag(node->cmd, &flag, &start_index);
+
+    // If no arguments left after -n flags
+    if (!node->cmd[start_index])
+        return;
+
+    // Print remaining arguments
+    int i = start_index;
+    while (node->cmd[i])
+    {
+        write(1, node->cmd[i], ft_strlen(node->cmd[i]));
+        if (node->cmd[i + 1] != NULL)
+            write(1, " ", 1);
+        i++;
+    }
+
+    // Add newline if -n flag was not set
+    if (!flag)
+        write(1, "\n", 1);
 }
+
