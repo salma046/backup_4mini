@@ -149,7 +149,7 @@ int					ft_cd(t_minishell data);
 char				*put_quot2_value(char *str);
 char				*rm_quot2_value(char *str);
 void	ft_pwd(t_node *node);
-void				ft_echo(t_node *node, char **cmd);
+void				ft_echo(t_node *node);
 void				check_command(t_minishell data, t_node *node);
 void				ft_env(t_node *node, t_minishell data);
 void				ft_exit(t_minishell data);
