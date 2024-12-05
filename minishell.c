@@ -60,9 +60,21 @@ void handle_sigint(int sig)
 	(void)sig;
 	printf("\n\033[1;35m Minishell~$ \033[0m");
 }
-
+int	has_pipe(t_token *tokens)
+{
+	while (tokens)
+	{
+		if (tokens->data_type == PIPE)
+		{
+			return (1);
+		}
+		tokens = tokens->next_token;
+	}
+	return (0);
+}
 int	main(int ac, char *av[], char **env)
 {
+	t_node *tmp_node; // SOJod
 	signal(SIGINT, handle_sigint);
 	if (ac > 2)
 		return (1);
@@ -95,7 +107,18 @@ int	main(int ac, char *av[], char **env)
 		g_minishell.nodes = mk_nodes(g_minishell.tokens);
 		g_minishell.count_pips = count_pipe(g_minishell.nodes);
 		g_minishell.files = mksome_files(g_minishell.count_pips);
-		main3(g_minishell);
+		tmp_node = g_minishell.nodes;
+		if (has_pipe(g_minishell.tokens))
+		{
+			printf("Pipe detected in command!\n");
+			if (execute_piped_commands(tmp_node, env) == -1)
+			{
+				perror("pipe__execution");
+				return (1);
+			} continue ;
+		}
+		else
+			main3(g_minishell);
 		free_node_list(g_minishell.nodes);
 	}
 }
