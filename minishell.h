@@ -161,12 +161,9 @@ void				key_without_equal(char *data, t_env *envir);
 void				remove_node(t_env** head, char *keyToRemove);
 void				search_check_add_env(t_env *expo_envir, t_env *env_envir);
 void				*mk_env_4expo(char **envir);
-<<<<<<< HEAD
-int					mksome_files(int count_pipe, t_minishell data);
-=======
+// int					mksome_files(int count_pipe, t_minishell data);
 char				*ft_strncpy(char *dst, const char *src, size_t len);
 int					**mksome_files(int count_pipe);
->>>>>>> 143b6f42e8fe5dc1221fe8727ab5c1afe4b044ba
 int					assign_files(t_minishell data, t_node *nodes);
 // void				ft_env_export_once(t_token *token, int active);
 // void			ft_add_to_export_arg(t_token *token);
@@ -174,6 +171,8 @@ int					assign_files(t_minishell data, t_node *nodes);
 
 // execute commands 🚀:
 int ft_execute(t_minishell data, t_node *nodes, char **env);
+int	execute_piped_commands(t_node *nodes, char **env);
+
 
 // redirectios 🔁:
 int					ft_input(char *file_name, t_node *node);
@@ -185,6 +184,7 @@ int					ft_heredoc(t_token *tokens);
 int					start_heredoc(int fd, char *limiter);
 int					ft_start_heredoc(int fd, char *limiter);
 void				free_fds(t_minishell data);
+
 
 // error 🚨:
 void				ft_error(char *msg);
