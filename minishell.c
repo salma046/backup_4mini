@@ -2,20 +2,7 @@
 
 t_minishell	g_minishell;
 
-void free_env_array(char **arr)
-{
-    int i = 0;
 
-    if (!arr)
-        return;
-
-    while (arr[i])
-    {
-        free(arr[i]);
-        i++;
-    }
-    free(arr);
-}
 int	prepar_for_execution(t_minishell data)
 {
 	if (mksome_files(data.count_pips, data) < 0)

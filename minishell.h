@@ -9,9 +9,7 @@
 # include <sys/types.h>
 # include <sys/wait.h>
 # include <unistd.h>
-#include "get_next_line/get_next_line.h"
-
-//--->Sajida: new header Declarations
+# include "get_next_line/get_next_line.h"
 # include "libft/libft.h"
 # include <errno.h>
 # include <limits.h>
@@ -19,14 +17,13 @@
 # include <stdio.h>
 # include <string.h>
 
+
 typedef struct s_env
 {
 	char			*value;
 	char			*key;
 	struct s_env	*next;
 }					t_env;
-
-/// Sajida
 
 typedef enum e_token_type
 {
@@ -44,7 +41,7 @@ typedef struct s_token
 	token_type		data_type;
 	struct s_token	*next_token;
 	struct s_token	*prev_token;
-	char			**envirement;    //Sojod
+	char			**envirement;    
 }					t_token;
 
 typedef struct s_redir
@@ -80,7 +77,7 @@ typedef struct s_minishell
 extern t_minishell	g_minishell;
 
 
-char **mk_tenv_char(t_env *envir);
+char 				**mk_tenv_char(t_env *envir);
 char				*get_word(char *str, int i);
 char				*get_env_var(char *str, int i);
 char				*fill_first_part(char *env_var, int *i);
@@ -133,44 +130,47 @@ t_token				*parsing(t_minishell g_minishell);
 t_node				*mk_nodes(t_token *tokens);
 t_node				*allocate_for_node(t_token *temp_tokens);
 void				free_env_list(t_env *head);
-//  🥳 EXECUTION PART:
 
-t_env	*mk_env(char **envirement);
 
-// functionts utils:
-int					ft_strcmp(char *s1, char *s2);
+
+// functionts utils ✙:
 void				ft_sigint(int x);
+char				*ft_strncpy(char *dst, const char *src, size_t len);
+int					ft_strcmp(char *s1, char *s2);
 
-// commands:
-t_env				*ft_env_unset(t_minishell data);
-int					check_key(char *str, t_env *envir);
-int					ft_check_builtins(char *command);
+// building 🏗️:
 int					ft_cd(t_minishell data);
-char				*put_quot2_value(char *str);
-char				*rm_quot2_value(char *str);
-void	ft_pwd(t_node *node);
+void				ft_pwd(t_node *node);
 void				ft_echo(t_node *node);
-void				check_command(t_minishell data, t_node *node);
 void				ft_env(t_node *node, t_minishell data);
 void				ft_exit(t_minishell data);
 void				ft_unset(t_minishell data);
 void				ft_export(t_minishell data, t_env *expo_envir, t_env *env_envir);
+
+
+// commands 🗣️:
+t_env				*mk_env(char **envirement);
+t_env				*ft_env_unset(t_minishell data);
+int					check_key(char *str, t_env *envir);
+int					ft_check_builtins(char *command);
+char				*put_quot2_value(char *str);
+char				*rm_quot2_value(char *str);
+void				check_command(t_minishell data, t_node *node);
 void				ft_env_export_once(t_node *nodes, t_env *envir, int active);
 void				key_without_equal(char *data, t_env *envir);
 void				remove_node(t_env** head, char *keyToRemove);
 void				search_check_add_env(t_env *expo_envir, t_env *env_envir);
 void				*mk_env_4expo(char **envir);
-char				*ft_strncpy(char *dst, const char *src, size_t len);
 int					mksome_files(int count_pipe, t_minishell data);
 int					assign_files(t_minishell data, t_node *nodes);
 // void				ft_env_export_once(t_token *token, int active);
 // void			ft_add_to_export_arg(t_token *token);
 
 
-// executr commands:
+// execute commands 🚀:
 int ft_execute(t_minishell data, t_node *nodes, char **env);
 
-// redirectios:
+// redirectios 🔁:
 int					ft_input(char *file_name, t_node *node);
 int					ft_output(char *file_name, t_node *node);
 int					ft_append(char *file_name, t_node *node);
@@ -180,7 +180,11 @@ int					ft_heredoc(t_token *tokens);
 int					start_heredoc(int fd, char *limiter);
 int					ft_start_heredoc(int fd, char *limiter);
 void				free_fds(t_minishell data);
-// error:
-void	ft_error(char *msg);
+
+// error 🚨:
+void				ft_error(char *msg);
+
+// leaks 💦:
+void				free_env_array(char **arr);
 
 #endif
