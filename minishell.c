@@ -5,14 +5,12 @@ t_minishell	g_minishell;
 
 int	prepar_for_execution(t_minishell data)
 {
-	if (mksome_files(data.count_pips, data) < 0)
-		return (-2);
-	// printf("hello world1111\n   fiiileeee   %d\n",data->files);
+	// if (mksome_files(data.count_pips, data) < 0)
+	// 	return (-2);
 	if (assign_files(data, data.nodes) < 0)
 		return (-1);
 	if (ft_check_redirections(data.nodes) < 0) // just open files fhad lmrhala and do nothing.;
 		return (-1);
-	free_fds(data);
 	return (0);
 	// start the real work
 }
@@ -32,7 +30,6 @@ int main3(t_minishell data)
 		// printf("the cmd[0] is  : %s\n", temp_nodes->cmd[0]);
 		if (temp_nodes->cmd[0] == NULL)
 		{
-			printf("hello !!!!!!\n");
 			temp_nodes = temp_nodes->next_node;
 			continue ;
 		}
@@ -42,7 +39,8 @@ int main3(t_minishell data)
 		{
 			// printf("the cmd[0] is not a buil: %s\n", data.nodes->cmd[0]);
 			data.envirement = mk_tenv_char(data.envir);
-			int retu = ft_execute(data, data.nodes, data.envirement);
+			printf("hi cmd-------:%s\n", temp_nodes->cmd[0]);
+			int retu = ft_execute(data, temp_nodes, data.envirement);
 			if (retu == 127)
 			{
 				free_env_array(data.envirement);
@@ -50,9 +48,9 @@ int main3(t_minishell data)
 			}
 			free_env_array(data.envirement);
 		}
-	    free_fds(data);
 		temp_nodes = temp_nodes->next_node;
 	}
+	// free_fds(data);
     return (0);
 
 }
@@ -95,6 +93,8 @@ int	main(int ac, char *av[], char **env)
 		if (main_heredoc(g_minishell.tokens) < 0)
 			continue ;
 		g_minishell.nodes = mk_nodes(g_minishell.tokens);
+		g_minishell.count_pips = count_pipe(g_minishell.nodes);
+		g_minishell.files = mksome_files(g_minishell.count_pips);
 		main3(g_minishell);
 		free_node_list(g_minishell.nodes);
 	}

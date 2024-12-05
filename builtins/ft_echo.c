@@ -78,3 +78,4 @@ void ft_echo(t_node *node)
     if (!flag)
         write(1, "\n", 1);
 }
+

@@ -1,6 +1,6 @@
 #include "../minishell.h"
 
-int	free_fd(int **fd, int count)
+int	**free_fd(int **fd, int count)
 {
 	count--;
 	while (count >= 0)
@@ -9,23 +9,20 @@ int	free_fd(int **fd, int count)
 		count--;
 	}
 	free(fd);
-	return (-3);
+	return (NULL);
 }
 
-int	mksome_files(int count_pipe, t_minishell data)
+int	**mksome_files(int count_pipe)
 {
 	int		**fd;
 	int		i;
 
 	i = 0;
 	if (count_pipe == 1 || count_pipe == 0)
-	{
-		data.files = NULL;
-		return (0);
-	}
+		return (NULL);
 	fd = (int **)malloc(sizeof(int *) * (count_pipe));
 	if (!fd)
-		return (-1);
+		return (NULL);
 	while (i < count_pipe - 1)
 	{
 		fd[i] = malloc(sizeof(int) * 2);
@@ -35,8 +32,7 @@ int	mksome_files(int count_pipe, t_minishell data)
 		i++;
 	}
 	fd[i] = NULL;
-	data.files = fd;
-	return (0);
+	return (fd);
 }
 
 int	assign_files(t_minishell data, t_node *nodes)

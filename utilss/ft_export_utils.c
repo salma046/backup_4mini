@@ -85,7 +85,7 @@ void	ft_env_export_once(t_node *nodes, t_env *envir, int active)
 			write(tmp_node->out_file, current->key, ft_strlen(current->key));
 			write(tmp_node->out_file, current->value, ft_strlen(current->value));
 			write(tmp_node->out_file, "\n", 1);
-			printf("declare -x %s%s\n", current->key, current->value);
+			// printf("declare -x %s%s\n", current->key, current->value);
 		}
 		else if (active == 1)
 		{
@@ -94,7 +94,7 @@ void	ft_env_export_once(t_node *nodes, t_env *envir, int active)
 			write(tmp_node->out_file, "=", 1);
 			write(tmp_node->out_file, current->value, ft_strlen(current->value));
 			write(tmp_node->out_file, "\n", 1);
-			printf("declare -x %s=%s\n", current->key, current->value);
+			// printf("declare -x %s=%s\n", current->key, current->value);
 		}
 		current = current->next;
 	}

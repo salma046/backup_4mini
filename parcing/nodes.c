@@ -6,7 +6,7 @@
 /*   By: salaoui <salaoui@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/22 14:59:29 by salaoui           #+#    #+#             */
-/*   Updated: 2024/12/04 04:51:20 by salaoui          ###   ########.fr       */
+/*   Updated: 2024/12/05 01:01:47 by salaoui          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +67,8 @@ void	fill_node(t_token *temp_tokens, t_node **node_list)
 		tokens = tokens->next_token;
 	}
 	node->redir = redir;
+	node->in_file = 0;
+	node->out_file = 1;
 	node->cmd[i] = NULL;
 	node->next_node = NULL;
 	ft_node_add_back(node_list, node);
